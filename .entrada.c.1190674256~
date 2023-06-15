@@ -1,0 +1,44 @@
+#ifndef ENTRADA_C
+#define ENTRADA_C
+
+#include "objeto.c"
+#include <stdio.h>
+#include <string.h>
+
+static char* leer_datos() {
+  // return ;
+}
+
+static void *abrir_archivo(char *nombre){
+  char *linea;
+  FILE *archivo;
+  archivo = fopen(nombre, "r");
+
+  fread(linea, sizeof *linea, sizeof linea, archivo);
+  
+  char* seccion_actual;
+  
+  while (fscanf(archivo, "%s", linea) != EOF) {
+    if (strcmp(linea, "[descripcion]")) {
+      // printf("%s\n", linea);
+      seccion_actual = linea;
+    } else if (strcmp(linea, "[consultas]")) {
+      // printf("%s\n", linea);
+      seccion_actual = linea;
+    } else if (strcmp(seccion_actual, "[descripcion]")) {
+      Objeto objeto;
+      printf("%s, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n", linea);
+      // procesar linea de descripcion y retornar objeto
+    } else if (strcmp(seccion_actual, "[consultas]")) {
+      printf("%s\n", linea);
+      // procesar linea de consulta y retornar consulta
+    }
+  }
+  
+  // fscanf(archivo, "%s", linea);
+  // printf("%s\n", linea);
+
+  fclose(archivo);
+}
+
+#endif // ENTRADA_C
