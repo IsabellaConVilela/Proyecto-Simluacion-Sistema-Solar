@@ -45,11 +45,11 @@ static void interpretador_objetos(int seccion_contador, char *linea ){
     ++counter;
   }
 
-  // printf("ID: %s\n", objetos[seccion_contador].id_objeto);
-  // printf("MASA: %lf\n", objetos[seccion_contador].masa);
-  // printf("PERIHELIO: %lf, %lf\n", objetos[seccion_contador].x_perihelio, objetos[seccion_contador].y_perihelio);
-  // printf("AFELIO: %lf, %lf\n", objetos[seccion_contador].x_afelio, objetos[seccion_contador].y_afelio);
-  // printf("INICIO: %lf, %lf\n", objetos[seccion_contador].x_inicio, objetos[seccion_contador].y_inicio);
+  printf("ID: %s\n", objetos[seccion_contador].id_objeto);
+  printf("MASA: %lf\n", objetos[seccion_contador].masa);
+  printf("PERIHELIO: %lf, %lf\n", objetos[seccion_contador].x_perihelio, objetos[seccion_contador].y_perihelio);
+  printf("AFELIO: %lf, %lf\n", objetos[seccion_contador].x_afelio, objetos[seccion_contador].y_afelio);
+  printf("INICIO: %lf, %lf\n", objetos[seccion_contador].x_inicio, objetos[seccion_contador].y_inicio);
   ++seccion_contador;
 }
 
@@ -74,9 +74,9 @@ static void interpretador_consultas(int seccion_contador, char *linea) {
         ++counter;
       }
 
-      // printf("ID: %s\n", consultas[seccion_contador].id_consulta);
-      // printf("OBJETO: %s\n", consultas[seccion_contador].id_objeto);
-      // printf("SEGUNDOS: %lf\n", consultas[seccion_contador].segundos);
+      printf("ID: %s\n", consultas[seccion_contador].id_consulta);
+      printf("OBJETO: %s\n", consultas[seccion_contador].id_objeto);
+      printf("SEGUNDOS: %lf\n", consultas[seccion_contador].segundos);
       ++seccion_contador;
 }
 
