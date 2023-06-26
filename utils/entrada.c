@@ -1,181 +1,140 @@
 #ifndef ENTRADA_C
 #define ENTRADA_C
 
-#include "formulas.c"
 #include "../classes/respuesta.c"
+#include "formulas.c"
 
+#include "../classes/consulta.c"
 #include "../classes/objeto.c"
 #include <stdio.h>
 #include <string.h>
-#include "../classes/consulta.c"
 
-static Objeto objetos[100];
-static Consulta consultas[100];
-static Respuesta respuestas[100];
+static Objeto objetos[50];
+static Consulta consultas[50];
+static Respuesta respuestas[50];
 
-
-static void interpretador_objetos(int seccion_contador, char *linea){
+static void interpretador_objetos(int *indice, char *linea) {
   int counter = 0;
   char *dato = strtok(linea, ",");
   while (dato) {
 
-    switch(counter) {
-      case 0:
-        objetos[seccion_contador].id_objeto = dato;
-        break;
-      case 1:
-        objetos[seccion_contador].masa = strtod(dato, NULL);
-        break;
-      case 2:
-        objetos[seccion_contador].x_perihelio = strtod(dato, NULL);
-        break;
-      case 3:
-        objetos[seccion_contador].y_perihelio = strtod(dato, NULL);
-        break;
-      case 4:
-        objetos[seccion_contador].x_afelio = strtod(dato, NULL);
-        break;
-      case 5:
-        objetos[seccion_contador].y_afelio = strtod(dato, NULL);
-        break;
-      case 6:
-        objetos[seccion_contador].x_inicio = strtod(dato, NULL);
-        break;
-      case 7:
-        objetos[seccion_contador].y_inicio = strtod(dato, NULL);
-        break;
+    if (counter == 0) {
+      strcpy(objetos[*indice].id_objeto, dato);
+    } else if (counter == 1) {
+      objetos[*indice].masa = strtod(dato, NULL);
+    } else if (counter == 2) {
+      objetos[*indice].x_perihelio = strtod(dato, NULL);
+    } else if (counter == 3) {
+      objetos[*indice].y_perihelio = strtod(dato, NULL);
+    } else if (counter == 4) {
+      objetos[*indice].x_afelio = strtod(dato, NULL);
+    } else if (counter == 5) {
+      objetos[*indice].y_afelio = strtod(dato, NULL);
+    } else if (counter == 6) {
+      objetos[*indice].x_inicio = strtod(dato, NULL);
+    } else if (counter == 7) {
+      objetos[*indice].y_inicio = strtod(dato, NULL);
     }
-    
-    dato = strtok(NULL,",");
+
+    dato = strtok(NULL, ",");
     ++counter;
   }
-
- 
-  // printf("ID: %s\n", objetos[seccion_contador].id_objeto);
-  // printf("MASA: %lf\n", objetos[seccion_contador].masa);
-  // printf("PERIHELIO: %lf, %lf\n", objetos[seccion_contador].x_perihelio, objetos[seccion_contador].y_perihelio);
-  // printf("AFELIO: %lf, %lf\n", objetos[seccion_contador].x_afelio, objetos[seccion_contador].y_afelio);
-  // printf("INICIO: %lf, %lf\n", objetos[seccion_contador].x_inicio, objetos[seccion_contador].y_inicio);
-  // ++seccion_contador;
+  *indice += 1;
 }
 
-static void interpretador_consultas(int seccion_contador, char *linea) {
+static void interpretador_consultas(int *indice, char *linea) {
   int counter = 0;
-      char *dato = strtok(linea, ",");
-      while (dato) {
+  char *dato = strtok(linea, ",");
+  while (dato) {
 
-        switch(counter) {
-          case 0:
-            consultas[seccion_contador].id_consulta = dato;
-            break;
-          case 1:
-            consultas[seccion_contador].id_objeto = dato;
-            break;
-          case 2:
-            consultas[seccion_contador].segundos = strtod(dato, NULL);
-            break;
-        }
-        
-        dato = strtok(NULL,",");
-        ++counter;
-      }
+    if (counter == 0) {
+      strcpy(consultas[*indice].id_consulta, dato);
+    } else if (counter == 1) {
+      strcpy(consultas[*indice].id_objeto, dato);
+    } else if (counter == 2) {
+      consultas[*indice].segundos = strtod(dato, NULL);
+    }
 
-      // printf("ID: %s\n", consultas[seccion_contador].id_consulta);
-      // printf("OBJETO: %s\n", consultas[seccion_contador].id_objeto);
-      // printf("SEGUNDOS: %lf\n", consultas[seccion_contador].segundos);
-      ++seccion_contador;
+    dato = strtok(NULL, ",");
+    ++counter;
+  }
+  *indice += 1;
 }
 
-static void procesador_respuestas(Consulta *consultas, Objeto *objetos ){
-  for(int i=0; i<sizeof *consultas; i++){
-    if (consultas[i].id_objeto != NULL){
-      //printf("%s\n",consultas[i].id_objeto);
-      for(int j=0; j<sizeof *objetos; j++){
-        if(objetos[j].id_objeto != NULL && strcmp(consultas[i].id_objeto,objetos[j].id_objeto)){
-          Coordenadas centro = {0,0};
-          Coordenadas afelio= {objetos[j].x_afelio,objetos[j].y_afelio};
-          Coordenadas perihelio={objetos[j].x_perihelio,objetos[j].x_perihelio};
+static void procesador_respuestas(Consulta *consultas, Objeto *objetos) {
 
-          double r_afelio = calcularDistancia(afelio,centro);
-          printf("r_afelio, %lf \n",r_afelio);
-          double r_perihelio= calcularDistancia(centro,perihelio);
-          printf("r_perihelio,%lf \n",r_perihelio);
-          double ejeMayor= calcularEjeMayor( r_perihelio,  r_afelio);
-          printf("eje Mayor, %lf \n", ejeMayor);
-          double excentricidad= calcularExcentricidad( r_perihelio,  r_afelio);
-          printf("excentricidad,%lf \n", excentricidad);
-          double ejeMenor= calcularEjeMenor (ejeMayor, excentricidad);
-          printf("eje menor, %lf \n", ejeMenor);
-          double periodoOrbital= calcularPeriodoOrbital(ejeMayor, objetos[j].masa);
-          printf("priodoOrbital, %lf \n", periodoOrbital);
-          double velocidadMedia= calcularVelocidadMedia(ejeMayor, periodoOrbital);
-          printf("velocidad media,%lf \n",velocidadMedia);
-          double anguloRecorido= calcularAnguloDeRecorrido(consultas[i].segundos, periodoOrbital);
-          printf("anguelo recordido,%lf \n", anguloRecorido);
-          double distanciaRadial= calcularDistanciaRadial( ejeMayor, excentricidad, anguloRecorido);
-          printf("distancia radial,%lf \n", distanciaRadial);
-          Coordenadas coordenadasFinales= calcularCoordenadasFinales(distanciaRadial, anguloRecorido);
-          
-          printf("%lf\n", coordenadasFinales.x);
-          printf("%lf", coordenadasFinales.y);
+  for (int i = 0; i < sizeof(consultas); i++) {
+    if (consultas[i].id_objeto[0] != '\0') {
+      for (int j = 0; j < sizeof(objetos); j++) {
+        if (objetos[j].id_objeto[0] != '\0' &&
+            !strcmp(consultas[i].id_objeto, objetos[j].id_objeto)) {
+          printf("REALIZANDO CONSULTA: %s\n", consultas[i].id_consulta);
 
-          // printf("ID: %s\n", objetos[j].id_objeto);
-          // printf("MASA: %lf\n", objetos[j].masa);
-          // printf("PERIHELIO: %lf, %lf\n", objetos[j].x_perihelio,objetos[j].x_perihelio);
-          // printf("AFELIO: %lf, %lf\n", objetos[j].x_afelio, objetos[j].y_afelio);
-          // printf("INICIO: %lf, %lf\n", objetos[j].x_inicio, objetos[j].y_inicio);
+          Coordenadas foco = {0, 0};
 
-          Respuesta respuesta={consultas[i].id_consulta, coordenadasFinales.x, coordenadasFinales.y};
-          respuestas[i]=respuesta;
+          Coordenadas afelio = {objetos[j].x_afelio, objetos[j].y_afelio};
 
-          
+          Coordenadas perihelio = {objetos[j].x_perihelio, objetos[j].y_perihelio};
+          Coordenadas iniciales={objetos[j].x_inicio,objetos[j].y_inicio};
+
+          double r_afelio = calcularDistancia(afelio);
+          double r_perihelio = calcularDistancia(perihelio);
+          double ejeMayor = calcularEjeMayor(r_perihelio, r_afelio);
+          Coordenadas centro = calcularCentro(ejeMayor, perihelio, afelio);
+          double ejeMenor = calcularEjeMenor(ejeMayor, centro);
+          double periodoOrbital = calcularPeriodoOrbital(ejeMayor / 2, objetos[j].masa);
+          double anguloRecorido = calcularAnguloDeRecorrido(consultas[i].segundos, periodoOrbital,iniciales);
+          Coordenadas coordenadasFinales = calcularCoordenadasFinales(ejeMayor, ejeMenor, centro, anguloRecorido);
+
+          Respuesta respuesta;
+          strcpy(respuesta.id_consulta, consultas[i].id_consulta);
+          respuesta.x = coordenadasFinales.x;
+          respuesta.y = coordenadasFinales.y;
+
+          respuestas[i] = respuesta;
         }
       }
     }
   }
 }
 
-static void generar_salida(){
+static void generar_salida() {
   FILE *archivo_respuestas;
   archivo_respuestas = fopen("respuestas.txt", "w");
   fputs("[Respuestas]\n", archivo_respuestas);
-  for(int i=0; i<sizeof(*respuestas);i++){
-    if(respuestas[i].id_consulta!=NULL){
-      fprintf(archivo_respuestas,"ID:%s, X:%lf, Y:%lf", respuestas[i].id_consulta, respuestas[i].x, respuestas[i].y); 
+  for (int i = 0; i < sizeof(*respuestas); i++) {
+    if (respuestas[i].id_consulta[0] != '\0') {
+      fprintf(archivo_respuestas, "ID:%s, X:%lf, Y:%lf\n",
+              respuestas[i].id_consulta, respuestas[i].x, respuestas[i].y);
     }
   }
   fclose(archivo_respuestas);
+  printf("Finalizado con exito! Documento de respuestas generado satisfactoriamente!");
 }
 
 static void abrir_archivo(char *nombre) {
   char linea[150];
-  int objCounter = 0;
-  int conCounter = 0;
+  int obj_i = 0;
+  int con_i = 0;
   FILE *archivo = fopen(nombre, "r");
 
-  char seccion_actual[150];
+  char seccion_actual[25]; // almacena cabecera de la seccion actual
 
   while (fgets(linea, sizeof(linea), archivo) != NULL) {
-    if (linea[0] == '[') 
-    {
+    if (linea[0] == '[') {
       strcpy(seccion_actual, linea);
-    } 
-    else if (seccion_actual[1] == 'd') 
-    {
-      interpretador_objetos(objCounter, linea);
-    } 
-    else if (seccion_actual[1] == 'c') 
-    {
-      interpretador_consultas(conCounter, linea);
+    } else if (seccion_actual[1] == 'd') {
+      interpretador_objetos(&obj_i, linea);
+    } else if (seccion_actual[1] == 'c') {
+      interpretador_consultas(&con_i, linea);
     }
   }
 
-  fclose(archivo);
-  procesador_respuestas(consultas,objetos);
-  generar_salida();
+   fclose(archivo);
+   procesador_respuestas(consultas, objetos);
+   generar_salida();
+
   
 }
-
-
 
 #endif // ENTRADA_C

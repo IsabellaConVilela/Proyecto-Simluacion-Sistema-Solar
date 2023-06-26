@@ -1,54 +1,60 @@
-#include <math.h>
 #include "../classes/coordenadas.c"
+#include <math.h>
 
-//d=Sqrt((x2-x1)^2 + (y2-y1)^2)
-static double calcularDistancia(Coordenadas a, Coordenadas b){
-  return sqrt(pow(b.x- a.x,2) + pow(b.y-a.y,2));
+// d=Sqrt((x2-x1)^2 + (y2-y1)^2)
+static double calcularDistancia(Coordenadas a) {
+  // return sqrt(pow(b.x- a.x,2) + pow(b.y-a.y,2));
+  return fabsl(a.x);
 }
 
 // a=(r_peri + r_afelio)/2
-static double calcularEjeMayor(double r_perihelio, double r_afelio){
-  return (r_perihelio +r_afelio)/2;
+static double calcularEjeMayor(double r_perihelio, double r_afelio) {
+  return (r_perihelio + r_afelio);
 }
 
-// e= (r-afelio - r_peri)/(r_afelio + r_peri)
-static double calcularExcentricidad(double r_perihelio, double r_afelio){
-  return ((r_afelio - r_perihelio/ (r_afelio + r_perihelio)));
+// c = a - p;
+static Coordenadas calcularCentro(double eje_mayor, Coordenadas perihelio, Coordenadas afelio) {
+
+  if (perihelio.x < 0) {
+    Coordenadas centro = {((eje_mayor / 2) + perihelio.x), 0};
+    return centro;
+  } else if (afelio.x < 0) {
+    Coordenadas centro = {((eje_mayor / 2) + afelio.x), 0};
+    return centro;
+  } else {
+    printf("Error: Segun las especificaciones del proyecto, los datos no se pueden "
+           "calcular, por lo tanto se retorna un centro igual a (0, 0)\n");
+    Coordenadas centro = {0, 0};
+    return centro;
+  }
 }
 
-//b=a* sqrt(1-e^2)
-static double calcularEjeMenor (double a, double e){
-  return (a*sqrt(1-pow(e,2)));
+// b=sqrt(a^2-c^2)
+static double calcularEjeMenor(double a, Coordenadas c) {
+  return sqrtf(pow(a / 2, 2) - pow(c.x, 2)) * 2;
 }
 
 // T = 2π * √(a³ / (G * M))
 static double calcularPeriodoOrbital(double a, double M) {
   const double G = 0.0000000000667;
+  const double A = 1;
   return ((2 * M_PI) * sqrt(pow(a, 3) / (G * M)));
 }
 
-// v_media = 2π * a / T
-static double calcularVelocidadMedia(double a, double T) {
-  return ((2 * M_PI) * (a / T));
-}
-
-// θ = 2π * x / T
-static double calcularAnguloDeRecorrido(double seg, double T) {
-  return ((2 * M_PI) * (seg / T));
-}
-
-// r = a * (1 - e²) / (1 + e * cos(θ))
-static double calcularDistanciaRadial(double a, double e, double ang) {
-  return a * (1 - pow(e, 2)) / (1 + (e * cos(ang)));
+// θ = (segundos/ T)* π/180 + arcos(x/r)
+static double calcularAnguloDeRecorrido(double seg, double T, Coordenadas inicio) {
+  double r = sqrt(pow(inicio.x, 2) + pow(inicio.y, 2));
+  double theta = acos(inicio.x / r);
+  double angulo_tiempo = (seg / T) * (360 * M_PI / 180);
+  return (angulo_tiempo + theta);
 }
 
 // coords = (x = r * cos(θ), y = r * sin(θ))
-static Coordenadas calcularCoordenadasFinales(double r, double ang) {
-  
+static Coordenadas calcularCoordenadasFinales(double a, double b, Coordenadas c, double angulo) {
+
   Coordenadas coords;
-  coords.x = r * cos(ang);
-  coords.y = r * sin(ang);
-  
+  coords.x = ((a/2 * cos(angulo)) + c.x);
+  coords.y = ((b/2 * sin(angulo)) + c.y);
+
   return coords;
 }
-

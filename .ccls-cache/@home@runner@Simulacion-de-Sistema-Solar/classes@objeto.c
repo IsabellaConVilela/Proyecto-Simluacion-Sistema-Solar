@@ -1,5 +1,5 @@
 typedef struct Objeto {
-  char *id_objeto;
+  char id_objeto[50];
   double masa;
   double x_perihelio;
   double y_perihelio;
