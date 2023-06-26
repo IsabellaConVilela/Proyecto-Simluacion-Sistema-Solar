@@ -1,7 +1,9 @@
+#include "utils/entrada.c"
 #include <stdio.h>
-#include "entrada.c"
 
 int main(void) {
-  
-  abrir_archivo("configuration.txt");
+  char filename[100];
+  printf("Introduzca el nombre del archivo: ");
+  scanf("%s", filename);
+  abrir_archivo(filename);
 }
