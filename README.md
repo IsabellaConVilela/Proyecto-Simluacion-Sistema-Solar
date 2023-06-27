@@ -117,8 +117,8 @@ Además aprendí y he llegado a comprender lo fundamental que es mantener el ord
 En síntesis, el proyecto final del curso de Programación bajo plataformas  abiertas, ha sido una buena experiencia, que sin duda alguna ha permitido aclarar muchas dudas del lenguaje, y fomentado la paciencia para resolver problemas difíciles, mi  dominio y la fluidez del uso de este lenguaje de programación definitivamente han mejorado exponencialmente. 
 
 ## Referencias: 
-- Ley de Newton de la gravitación universal. (s.f.). En Wikipedia. Recuperado el 26 de junio de 2023, de https://es.wikipedia.org/wiki/Ley_de_Newton_de_la_gravitaci%C3%B3n_universal
+- Ley de Newton de la gravitación universal. (s.f.). En Wikipedia. Recuperado el 16 de junio de 2023, de https://es.wikipedia.org/wiki/Ley_de_Newton_de_la_gravitaci%C3%B3n_universal
 
-- Leyes de Kepler. (s.f.). En Enciclopedia Britannica. Recuperado el 26 de junio de 2023, de https://www.britannica.com/science/Keplers-laws-of-planetary-motion
+- Leyes de Kepler. (s.f.). En Enciclopedia Britannica. Recuperado el 20 de junio de 2023, de https://www.britannica.com/science/Keplers-laws-of-planetary-motion
 
-- Biblioteca estándar de C. (s.f.). En GNU Project. Recuperado el 26 de junio de 2023, de https://www.gnu.org/software/libc/
+- Biblioteca estándar de C. (s.f.). En GNU Project. Recuperado el 15 de junio de 2023, de https://www.gnu.org/software/libc/
