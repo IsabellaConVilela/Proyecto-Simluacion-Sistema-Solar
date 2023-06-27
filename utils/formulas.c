@@ -21,6 +21,9 @@ static Coordenadas calcularCentro(double eje_mayor, Coordenadas perihelio, Coord
   } else if (afelio.x < 0) {
     Coordenadas centro = {((eje_mayor / 2) + afelio.x), 0};
     return centro;
+  } else if (perihelio.x == 0 && afelio.x == 0) {
+    Coordenadas centro = {0, 0};
+    return centro;
   } else {
     printf("Error: Segun las especificaciones del proyecto, los datos no se pueden "
            "calcular, por lo tanto se retorna un centro igual a (0, 0)\n");
@@ -46,7 +49,12 @@ static double calcularAnguloDeRecorrido(double seg, double T, Coordenadas inicio
   double r = sqrt(pow(inicio.x, 2) + pow(inicio.y, 2));
   double theta = acos(inicio.x / r);
   double angulo_tiempo = (seg / T) * (360 * M_PI / 180);
-  return (angulo_tiempo + theta);
+
+  if (inicio.x == 0) {
+    return 0;
+  } else {
+    return (angulo_tiempo + theta);
+  }
 }
 
 // coords = (x = r * cos(θ), y = r * sin(θ))

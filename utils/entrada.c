@@ -13,9 +13,23 @@ static Objeto objetos[50];
 static Consulta consultas[50];
 static Respuesta respuestas[50];
 
+static char *eliminarEspacios(char *str) {
+  int counter = 0;
+
+  for (int i = 0; str[i] != '\0'; i++) {
+    if (str[i] != ' ') {
+      str[counter] = str[i];
+      counter++;
+    }
+  }
+
+  str[counter] = '\0';
+  return str;
+}
+
 static void interpretador_objetos(int *indice, char *linea) {
   int counter = 0;
-  char *dato = strtok(linea, ",");
+  char *dato = strtok(linea, ", ");
   while (dato) {
 
     if (counter == 0) {
@@ -36,7 +50,7 @@ static void interpretador_objetos(int *indice, char *linea) {
       objetos[*indice].y_inicio = strtod(dato, NULL);
     }
 
-    dato = strtok(NULL, ",");
+    dato = strtok(NULL, ", ");
     ++counter;
   }
   *indice += 1;
@@ -71,20 +85,22 @@ static void procesador_respuestas(Consulta *consultas, Objeto *objetos) {
           printf("REALIZANDO CONSULTA: %s\n", consultas[i].id_consulta);
 
           Coordenadas foco = {0, 0};
-
           Coordenadas afelio = {objetos[j].x_afelio, objetos[j].y_afelio};
-
-          Coordenadas perihelio = {objetos[j].x_perihelio, objetos[j].y_perihelio};
-          Coordenadas iniciales={objetos[j].x_inicio,objetos[j].y_inicio};
+          Coordenadas perihelio = {objetos[j].x_perihelio,
+                                   objetos[j].y_perihelio};
+          Coordenadas iniciales = {objetos[j].x_inicio, objetos[j].y_inicio};
 
           double r_afelio = calcularDistancia(afelio);
           double r_perihelio = calcularDistancia(perihelio);
           double ejeMayor = calcularEjeMayor(r_perihelio, r_afelio);
           Coordenadas centro = calcularCentro(ejeMayor, perihelio, afelio);
           double ejeMenor = calcularEjeMenor(ejeMayor, centro);
-          double periodoOrbital = calcularPeriodoOrbital(ejeMayor / 2, objetos[j].masa);
-          double anguloRecorido = calcularAnguloDeRecorrido(consultas[i].segundos, periodoOrbital,iniciales);
-          Coordenadas coordenadasFinales = calcularCoordenadasFinales(ejeMayor, ejeMenor, centro, anguloRecorido);
+          double periodoOrbital =
+              calcularPeriodoOrbital(ejeMayor / 2, objetos[j].masa);
+          double anguloRecorido = calcularAnguloDeRecorrido(
+              consultas[i].segundos, periodoOrbital, iniciales);
+          Coordenadas coordenadasFinales = calcularCoordenadasFinales(
+              ejeMayor, ejeMenor, centro, anguloRecorido);
 
           Respuesta respuesta;
           strcpy(respuesta.id_consulta, consultas[i].id_consulta);
@@ -109,7 +125,8 @@ static void generar_salida() {
     }
   }
   fclose(archivo_respuestas);
-  printf("Finalizado con exito! Documento de respuestas generado satisfactoriamente!");
+  printf("Finalizado con exito! Documento de respuestas generado "
+         "satisfactoriamente!");
 }
 
 static void abrir_archivo(char *nombre) {
@@ -124,17 +141,17 @@ static void abrir_archivo(char *nombre) {
     if (linea[0] == '[') {
       strcpy(seccion_actual, linea);
     } else if (seccion_actual[1] == 'd') {
-      interpretador_objetos(&obj_i, linea);
+      char *lineaFormateada = eliminarEspacios(linea);
+      interpretador_objetos(&obj_i, lineaFormateada);
     } else if (seccion_actual[1] == 'c') {
-      interpretador_consultas(&con_i, linea);
+      char *lineaFormateada = eliminarEspacios(linea);
+      interpretador_consultas(&con_i, lineaFormateada);
     }
   }
 
-   fclose(archivo);
-   procesador_respuestas(consultas, objetos);
-   generar_salida();
-
-  
+  fclose(archivo);
+  procesador_respuestas(consultas, objetos);
+  generar_salida();
 }
 
 #endif // ENTRADA_C
